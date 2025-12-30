@@ -12,8 +12,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "typecheck": "pnpm -r run typecheck",
     "clean": "pnpm -r run clean",
-    "create-package": "node scripts/create-package.js",
-    "bump-major": "node scripts/bump-major.js",
+    "create-package": "tsx scripts/create-package.ts",
+    "bump-major": "tsx scripts/bump-major.ts",
     "release": "pnpm -r exec -- npx semantic-release -e semantic-release-monorepo"
   },
   "keywords": [
@@ -42,6 +42,7 @@
     "semantic-release": "^22.0.12",
     "semantic-release-monorepo": "^8.0.2",
     "tsup": "^8.0.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.3"
   },
   "engines": {

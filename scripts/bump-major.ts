@@ -1,19 +1,32 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 /**
  * Script to bump the major version of all packages in the monorepo
  * This should be run from the root level only
- * Usage: node scripts/bump-major.js
+ * Usage: pnpm bump-major
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
+
+interface PackageJson {
+  name: string;
+  version: string;
+  [key: string]: unknown;
+}
+
+interface PackageUpdate {
+  name: string;
+  path: string;
+  pkgJson: PackageJson;
+  currentVersion: string;
+  newVersion: string;
+}
 
 console.log('🚀 Major Version Bump\n');
 console.log('This will bump the major version of ALL packages in the monorepo.');
@@ -32,7 +45,7 @@ if (packages.length === 0) {
 
 console.log(`Found ${packages.length} package(s):\n`);
 
-const updates = [];
+const updates: PackageUpdate[] = [];
 
 // Read current versions
 for (const pkg of packages) {
@@ -43,9 +56,9 @@ for (const pkg of packages) {
     continue;
   }
 
-  const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf-8'));
+  const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as PackageJson;
   const currentVersion = pkgJson.version;
-  const [major, minor, patch] = currentVersion.split('.').map(Number);
+  const [major] = currentVersion.split('.').map(Number);
   const newVersion = `${major + 1}.0.0`;
 
   updates.push({

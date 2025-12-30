@@ -30,10 +30,10 @@ release-oppa/
 │       ├── CHANGELOG.md   # Package-specific changelog (auto-generated)
 │       └── README.md      # Package documentation
 ├── scripts/               # Utility scripts
-│   ├── create-package.js  # Create new packages
-│   └── bump-major.js      # Bump major versions
+│   ├── create-package.ts  # Create new packages
+│   └── bump-major.ts      # Bump major versions
 ├── .editorconfig          # Editor configuration
-├── .eslintrc.json         # ESLint configuration
+├── .eslintrc.cjs          # ESLint configuration
 ├── .prettierrc            # Prettier configuration
 ├── .releaserc.json        # Root semantic-release configuration
 ├── tsconfig.base.json     # Base TypeScript configuration

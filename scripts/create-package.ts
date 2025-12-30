@@ -1,8 +1,8 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 /**
  * Script to create a new package in the monorepo
- * Usage: node scripts/create-package.js <package-name>
+ * Usage: pnpm create-package <package-name>
  */
 
 import { mkdirSync, writeFileSync, existsSync } from 'fs';
@@ -17,7 +17,7 @@ const packageName = process.argv[2];
 
 if (!packageName) {
   console.error('Error: Package name is required');
-  console.log('Usage: node scripts/create-package.js <package-name>');
+  console.log('Usage: pnpm create-package <package-name>');
   process.exit(1);
 }
 
