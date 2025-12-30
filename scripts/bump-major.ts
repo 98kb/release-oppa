@@ -64,7 +64,7 @@ for (const pkg of packages) {
   const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf-8")) as PackageJson;
   const currentVersion = pkgJson.version;
   const [major] = currentVersion.split(".").map(Number);
-  const newVersion = `${major + 1}.0.0`;
+  const newVersion = `${(major ?? 0) + 1}.0.0`;
 
   updates.push({
     name: pkgJson.name,
