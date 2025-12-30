@@ -80,9 +80,9 @@ mkdir -p packages/my-package/src
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "files": ["dist"],
@@ -169,6 +169,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` - Other changes (dependencies, configs, etc.)
 
 Breaking changes (major version bump):
+
 - Add `BREAKING CHANGE:` in the commit body, or
 - Add `!` after the type: `feat!:`
 
