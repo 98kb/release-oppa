@@ -6,13 +6,13 @@
  * Usage: pnpm bump-major
  */
 
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import {readdirSync, readFileSync, writeFileSync, existsSync} from "fs";
+import {join, dirname} from "path";
+import {fileURLToPath} from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = join(__dirname, '..');
+const rootDir = join(__dirname, "..");
 
 interface PackageJson {
   name: string;
@@ -28,18 +28,22 @@ interface PackageUpdate {
   newVersion: string;
 }
 
-console.log('🚀 Major Version Bump\n');
-console.log('This will bump the major version of ALL packages in the monorepo.');
-console.log('Each package will get a new major version (e.g., 1.2.3 -> 2.0.0)\n');
+console.log("🚀 Major Version Bump\n");
+console.log(
+  "This will bump the major version of ALL packages in the monorepo.",
+);
+console.log(
+  "Each package will get a new major version (e.g., 1.2.3 -> 2.0.0)\n",
+);
 
 // Get all packages
-const packagesDir = join(rootDir, 'packages');
-const packages = readdirSync(packagesDir, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name);
+const packagesDir = join(rootDir, "packages");
+const packages = readdirSync(packagesDir, {withFileTypes: true})
+  .filter(dirent => dirent.isDirectory())
+  .map(dirent => dirent.name);
 
 if (packages.length === 0) {
-  console.error('❌ No packages found in packages/ directory');
+  console.error("❌ No packages found in packages/ directory");
   process.exit(1);
 }
 
@@ -49,16 +53,17 @@ const updates: PackageUpdate[] = [];
 
 // Read current versions
 for (const pkg of packages) {
-  const pkgJsonPath = join(packagesDir, pkg, 'package.json');
+  const pkgJsonPath = join(packagesDir, pkg, "package.json");
 
   if (!existsSync(pkgJsonPath)) {
     console.warn(`⚠️  Skipping ${pkg}: no package.json found`);
+    // eslint-disable-next-line no-continue
     continue;
   }
 
-  const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as PackageJson;
+  const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf-8")) as PackageJson;
   const currentVersion = pkgJson.version;
-  const [major] = currentVersion.split('.').map(Number);
+  const [major] = currentVersion.split(".").map(Number);
   const newVersion = `${major + 1}.0.0`;
 
   updates.push({
@@ -73,32 +78,34 @@ for (const pkg of packages) {
 }
 
 if (updates.length === 0) {
-  console.error('\n❌ No packages to update');
+  console.error("\n❌ No packages to update");
   process.exit(1);
 }
 
-console.log('\n⚠️  This is a destructive operation. Press Ctrl+C to cancel.');
-console.log('Continuing in 5 seconds...\n');
+console.log("\n⚠️  This is a destructive operation. Press Ctrl+C to cancel.");
+console.log("Continuing in 5 seconds...\n");
 
 // Wait 5 seconds
-await new Promise((resolve) => setTimeout(resolve, 5000));
+await new Promise(resolve => {
+  setTimeout(resolve, 5000);
+});
 
 // Update package.json files
-console.log('Updating package.json files...\n');
+console.log("Updating package.json files...\n");
 
 for (const update of updates) {
   update.pkgJson.version = update.newVersion;
-  writeFileSync(update.path, JSON.stringify(update.pkgJson, null, 2) + '\n');
+  writeFileSync(update.path, JSON.stringify(update.pkgJson, null, 2) + "\n");
   console.log(`  ✅ Updated ${update.name}`);
 }
 
 // Update changelogs
-console.log('\nUpdating CHANGELOG.md files...\n');
+console.log("\nUpdating CHANGELOG.md files...\n");
 
-const releaseDate = new Date().toISOString().split('T')[0];
+const releaseDate = new Date().toISOString().split("T")[0];
 
 for (const update of updates) {
-  const changelogPath = join(dirname(update.path), 'CHANGELOG.md');
+  const changelogPath = join(dirname(update.path), "CHANGELOG.md");
   const changelogEntry = `# [${update.newVersion}](https://github.com/98kb/release-oppa/compare/${update.name}@${update.currentVersion}...${update.name}@${update.newVersion}) (${releaseDate})
 
 ### ⚠ BREAKING CHANGES
@@ -108,7 +115,7 @@ for (const update of updates) {
 `;
 
   if (existsSync(changelogPath)) {
-    const existingChangelog = readFileSync(changelogPath, 'utf-8');
+    const existingChangelog = readFileSync(changelogPath, "utf-8");
     writeFileSync(changelogPath, changelogEntry + existingChangelog);
   } else {
     writeFileSync(changelogPath, changelogEntry);
@@ -116,11 +123,13 @@ for (const update of updates) {
   console.log(`  ✅ Updated CHANGELOG for ${update.name}`);
 }
 
-console.log('\n📝 Next steps:');
-console.log('  1. Review the changes with: git diff');
+console.log("\n📝 Next steps:");
+console.log("  1. Review the changes with: git diff");
 console.log(
-  '  2. Commit the changes: git add . && git commit -m "chore: bump major version for all packages"'
+  '  2. Commit the changes: git add . && git commit -m "chore: bump major version for all packages"',
 );
-console.log('  3. Push to trigger release: git push origin main');
-console.log('  4. Create and publish release notes with breaking changes documentation');
-console.log('\n✨ Done!');
+console.log("  3. Push to trigger release: git push origin main");
+console.log(
+  "  4. Create and publish release notes with breaking changes documentation",
+);
+console.log("\n✨ Done!");

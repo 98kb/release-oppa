@@ -1,9 +1,9 @@
-import { defineConfig } from 'tsup';
+import {defineConfig} from "tsup";
 
 export const createTsupConfig = (options = {}) => {
   return defineConfig({
-    entry: ['src/index.ts'],
-    format: ['esm', 'cjs'],
+    entry: ["src/index.ts"],
+    format: ["esm", "cjs"],
     dts: true,
     splitting: false,
     sourcemap: true,
