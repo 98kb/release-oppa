@@ -33,7 +33,7 @@ release-oppa/
 │   ├── create-package.ts  # Create new packages
 │   └── bump-major.ts      # Bump major versions
 ├── .editorconfig          # Editor configuration
-├── .eslintrc.cjs          # ESLint configuration
+├── eslint.config.js       # ESLint flat config (ESM)
 ├── .prettierrc            # Prettier configuration
 ├── .releaserc.json        # Root semantic-release configuration
 ├── tsconfig.base.json     # Base TypeScript configuration
