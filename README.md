@@ -11,7 +11,9 @@ A monorepo setup for publishing npm packages using pnpm workspaces, with TypeScr
 - **Prettier**: Consistent code formatting
 - **EditorConfig**: Editor consistency across team members
 - **Semantic Release**: Automated versioning and changelog generation
-- **Synchronized Versioning**: All packages share the same major version
+- **Hybrid Versioning Strategy**:
+  - Each package manages its own **minor** and **patch** releases independently
+  - **Major** version bumps happen at the root level and affect all packages simultaneously
 
 ## 📦 Structure
 
@@ -56,10 +58,32 @@ pnpm install
 - `pnpm format:check` - Check code formatting
 - `pnpm typecheck` - Type-check all packages
 - `pnpm clean` - Clean build artifacts
+- `pnpm create-package <name>` - Create a new package with boilerplate
+- `pnpm bump-major` - Bump major version for ALL packages (for breaking changes)
+- `pnpm release` - Manually trigger release for all packages (mainly for local testing)
 
 ## 📦 Creating a New Package
 
-To create a new package in the monorepo:
+### Quick Start (Recommended)
+
+Use the automated script to create a new package:
+
+```bash
+pnpm create-package my-package
+```
+
+This will create a complete package structure with:
+
+- `package.json` with proper configuration
+- `tsconfig.json` extending base config
+- `tsup.config.ts` for building
+- `.releaserc.json` for semantic-release
+- `src/index.ts` with example code
+- `README.md` with basic documentation
+
+### Manual Setup
+
+To manually create a new package in the monorepo:
 
 1. Create a new directory in `packages/`:
 
@@ -154,35 +178,106 @@ pnpm build
 
 ## 🔄 Versioning and Releases
 
-This monorepo uses **semantic-release** for automated versioning and changelog generation. All packages will be published under the same major version.
+This monorepo uses a **hybrid versioning strategy** with **semantic-release**:
+
+- **Minor and Patch releases**: Each package manages these independently based on its own commits
+- **Major releases**: Handled at the root level and applied to ALL packages simultaneously
 
 ### Commit Message Convention
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-- `feat:` - A new feature (minor version bump)
-- `fix:` - A bug fix (patch version bump)
-- `docs:` - Documentation changes
-- `style:` - Code style changes (formatting, etc.)
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
-- `chore:` - Other changes (dependencies, configs, etc.)
+- `feat:` - A new feature (**minor** version bump for the affected package)
+- `fix:` - A bug fix (**patch** version bump for the affected package)
+- `perf:` - Performance improvement (**patch** version bump)
+- `docs:` - Documentation changes (no version bump)
+- `style:` - Code style changes (no version bump)
+- `refactor:` - Code refactoring (no version bump)
+- `test:` - Adding or updating tests (no version bump)
+- `chore:` - Other changes (no version bump)
 
-Breaking changes (major version bump):
-
-- Add `BREAKING CHANGE:` in the commit body, or
-- Add `!` after the type: `feat!:`
+**Important**: Commits with `BREAKING CHANGE:` or `!` suffix (e.g., `feat!:`) will **NOT** trigger automatic releases. Breaking changes must be managed manually using the major version bump script.
 
 ### Release Process
 
-Releases are automated through CI/CD:
+#### Automated Minor/Patch Releases (Per Package)
 
-1. Push commits following the convention above
-2. Semantic-release analyzes commits
-3. Determines the next version
-4. Generates changelog
-5. Publishes packages to npm
-6. Creates GitHub release
+When you push commits to `main` branch:
+
+1. CI/CD analyzes commits for each package
+2. Determines if minor or patch release is needed
+3. Generates changelog for the package
+4. Publishes the package to npm
+5. Creates GitHub release
+
+Each package releases independently based on its own changes.
+
+#### Manual Major Release (All Packages)
+
+For breaking changes affecting the entire monorepo:
+
+1. **Run the major bump script** from the root:
+
+   ```bash
+   pnpm bump-major
+   ```
+
+   This will:
+   - Increment major version for ALL packages (e.g., 1.2.3 → 2.0.0)
+   - Update all CHANGELOG.md files
+   - Show you the changes to review
+
+2. **Review and commit**:
+
+   ```bash
+   git diff  # Review all changes
+   git add .
+   git commit -m "chore: bump major version for all packages
+
+   BREAKING CHANGE: <describe breaking changes>"
+   ```
+
+3. **Push to trigger release**:
+
+   ```bash
+   git push origin main
+   ```
+
+4. **Document breaking changes**: Update release notes with migration guides
+
+### Example Scenarios
+
+**Scenario 1**: Adding a new feature to one package
+
+```bash
+# In packages/example
+git commit -m "feat(example): add new greeting function"
+git push
+# Result: @release-oppa/example goes from 1.0.0 → 1.1.0
+```
+
+**Scenario 2**: Bug fix in multiple packages
+
+```bash
+git commit -m "fix(example): correct typo
+fix(other): fix edge case"
+git push
+# Result: Both packages get patch bumps independently
+```
+
+**Scenario 3**: Breaking change across all packages
+
+```bash
+# From root
+pnpm bump-major
+# Review changes
+git add .
+git commit -m "chore: bump major version for all packages
+
+BREAKING CHANGE: Updated API signature across all packages"
+git push
+# Result: ALL packages go from 1.x.x → 2.0.0
+```
 
 ## 🔧 CI/CD
 
@@ -195,9 +290,10 @@ This repository includes GitHub Actions workflows:
   - Build verification
 - **Release Workflow** (`.github/workflows/release.yml`): Runs on main/next branch
   - All CI checks
-  - Automated versioning with semantic-release
+  - Per-package semantic-release analysis
+  - Independent minor/patch version bumps
   - Package publishing to npm
-  - GitHub release creation
+  - GitHub release creation for each updated package
 
 ### Setting up CI/CD
 
@@ -206,6 +302,7 @@ To enable automated releases:
 1. **Add npm token**: Create an npm token and add it as `NPM_TOKEN` secret in GitHub repository settings
 2. **GitHub token**: The `GITHUB_TOKEN` is automatically provided by GitHub Actions
 3. **Branch protection**: Configure `main` branch to require CI checks before merging
+4. **For major releases**: Use `pnpm bump-major` locally and commit the changes
 
 ## 🤝 Contributing
 

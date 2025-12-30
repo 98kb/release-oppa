@@ -155,10 +155,26 @@ git commit -m "docs(readme): update installation instructions"
 
    ```json
    {
-     "extends": "../../.releaserc.json",
+     "branches": ["main", "next"],
      "plugins": [
-       "@semantic-release/commit-analyzer",
-       "@semantic-release/release-notes-generator",
+       [
+         "@semantic-release/commit-analyzer",
+         {
+           "preset": "conventionalcommits",
+           "releaseRules": [
+             { "breaking": true, "release": false },
+             { "type": "feat", "release": "minor" },
+             { "type": "fix", "release": "patch" },
+             { "type": "perf", "release": "patch" }
+           ]
+         }
+       ],
+       [
+         "@semantic-release/release-notes-generator",
+         {
+           "preset": "conventionalcommits"
+         }
+       ],
        [
          "@semantic-release/changelog",
          {
@@ -169,10 +185,13 @@ git commit -m "docs(readme): update installation instructions"
        [
          "@semantic-release/git",
          {
-           "assets": ["package.json", "CHANGELOG.md"]
+           "assets": ["package.json", "CHANGELOG.md"],
+           "message": "chore(release): ${nextRelease.gitTag} [skip ci]\n\n${nextRelease.notes}"
          }
-       ]
-     ]
+       ],
+       "@semantic-release/github"
+     ],
+     "tagFormat": "${version}"
    }
    ```
 
@@ -187,13 +206,44 @@ git commit -m "docs(readme): update installation instructions"
    pnpm typecheck
    ```
 
-## Synchronized Versioning
+## Versioning Strategy
 
-All packages in this monorepo share the same major version. When making breaking changes:
+This monorepo uses a **hybrid versioning approach**:
 
-1. Use the `BREAKING CHANGE` footer or `!` in commit messages
-2. Semantic-release will bump the major version
-3. Update all packages to maintain the same major version
+- **Minor and Patch releases**: Managed automatically per package based on conventional commits
+- **Major releases**: Managed manually at the root level for all packages
+
+### For Regular Changes (feat, fix, perf)
+
+1. Use conventional commits as usual:
+   ```bash
+   git commit -m "feat(package-name): add new feature"
+   git commit -m "fix(package-name): fix bug"
+   ```
+2. Push to trigger automatic release of affected packages
+
+### For Breaking Changes
+
+**DO NOT use `BREAKING CHANGE:` or `!` in commits** - these won't trigger releases.
+
+Instead, for breaking changes:
+
+1. **Run the major version bump script**:
+
+   ```bash
+   pnpm bump-major
+   ```
+
+2. **Review the changes** and commit:
+
+   ```bash
+   git add .
+   git commit -m "chore: bump major version for all packages
+
+   BREAKING CHANGE: Describe the breaking changes and migration path"
+   ```
+
+3. **Push to release**: All packages will be published with new major version
 
 ## Pull Request Process
 
@@ -223,15 +273,27 @@ All packages in this monorepo share the same major version. When making breaking
 
 ## Release Process
 
-Releases are automated through semantic-release:
+This monorepo uses **semantic-release** with a hybrid strategy:
 
-1. Commits are analyzed when merged to `main`
-2. Version is determined based on commit messages
-3. Changelog is generated
-4. Packages are published to npm
+### Automatic Releases (Minor/Patch)
+
+Each package releases independently when changes are merged to `main`:
+
+1. Commits are analyzed per package
+2. Version is determined (minor for `feat:`, patch for `fix:`)
+3. Changelog is generated for that package
+4. Package is published to npm
 5. GitHub release is created
 
-You don't need to manually bump versions or create releases!
+### Manual Major Releases
+
+For breaking changes that affect all packages:
+
+1. Use `pnpm bump-major` to update all package versions
+2. Commit with breaking change description
+3. Push to trigger release of all packages with new major version
+
+You don't need to manually bump versions for regular changes!
 
 ## Questions or Issues?
 

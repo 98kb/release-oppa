@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   release:
-    name: Release
+    name: Release Packages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,8 +45,13 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Release
+      - name: Release each package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        run: |
+          # Configure npm authentication
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+
+          # Release each package independently
+          pnpm -r exec -- npx semantic-release -e semantic-release-monorepo

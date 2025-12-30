@@ -11,7 +11,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "typecheck": "pnpm -r run typecheck",
-    "clean": "pnpm -r run clean"
+    "clean": "pnpm -r run clean",
+    "create-package": "node scripts/create-package.js",
+    "bump-major": "node scripts/bump-major.js",
+    "release": "pnpm -r exec -- npx semantic-release -e semantic-release-monorepo"
   },
   "keywords": [
     "monorepo",
