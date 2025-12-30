@@ -184,6 +184,29 @@ Releases are automated through CI/CD:
 5. Publishes packages to npm
 6. Creates GitHub release
 
+## 🔧 CI/CD
+
+This repository includes GitHub Actions workflows:
+
+- **CI Workflow** (`.github/workflows/ci.yml`): Runs on pull requests and pushes
+  - Code formatting check
+  - Linting
+  - Type checking
+  - Build verification
+- **Release Workflow** (`.github/workflows/release.yml`): Runs on main/next branch
+  - All CI checks
+  - Automated versioning with semantic-release
+  - Package publishing to npm
+  - GitHub release creation
+
+### Setting up CI/CD
+
+To enable automated releases:
+
+1. **Add npm token**: Create an npm token and add it as `NPM_TOKEN` secret in GitHub repository settings
+2. **GitHub token**: The `GITHUB_TOKEN` is automatically provided by GitHub Actions
+3. **Branch protection**: Configure `main` branch to require CI checks before merging
+
 ## 🤝 Contributing
 
 1. Create a new branch
