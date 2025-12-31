@@ -5,7 +5,7 @@ import type {
 } from "@release-oppa/plugin";
 import type {InspectorOptions} from "./InspectorOptions";
 import {printYaml} from "../../lib/printYaml";
-import {detector} from "./detector";
+import {detector} from "../detect/detector";
 
 export const inspector = async <Enrichment extends ContextEnrichment>(
   options: InspectorOptions<Enrichment>,
