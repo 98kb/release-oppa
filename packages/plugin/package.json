@@ -28,5 +28,8 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@release-oppa/schema": "workspace:*"
   }
 }

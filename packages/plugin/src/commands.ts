@@ -1,4 +1,4 @@
-import type {Command} from "./Command";
+import type {Command} from "@release-oppa/schema";
 
 const commandsRecord: Record<Command, boolean> = {
   inspect: true,

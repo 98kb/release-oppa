@@ -1,6 +1,8 @@
-import type {ContextEnrichment} from "./ContextEnrichment";
-import type {Plugin} from "./Plugin";
-import type {PluginOptions} from "./PluginOptions";
+import type {
+  ContextEnrichment,
+  Plugin,
+  PluginOptions,
+} from "@release-oppa/schema";
 import {preDetect} from "./preDetect";
 
 export function definePlugin<

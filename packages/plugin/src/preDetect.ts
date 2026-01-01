@@ -1,7 +1,9 @@
+import type {
+  ContextEnrichment,
+  Plugin,
+  PluginOptions,
+} from "@release-oppa/schema";
 import {commands} from "./commands";
-import type {ContextEnrichment} from "./ContextEnrichment";
-import type {Plugin} from "./Plugin";
-import type {PluginOptions} from "./PluginOptions";
 
 export const preDetect = <Enrichment extends ContextEnrichment>(
   options: PluginOptions<Enrichment>,
