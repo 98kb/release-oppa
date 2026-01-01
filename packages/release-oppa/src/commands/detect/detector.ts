@@ -2,7 +2,7 @@ import type {
   ContextEnrichment,
   Plugin,
   RuntimeContext,
-} from "@release-oppa/plugin";
+} from "@release-oppa/schema";
 
 export const detector = async <Enrichment extends ContextEnrichment>(
   plugin: Plugin<Enrichment>,

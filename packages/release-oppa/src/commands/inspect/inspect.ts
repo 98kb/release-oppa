@@ -1,13 +1,14 @@
 import {Command} from "commander";
-import * as git from "@release-oppa/plugin-git";
 import {inspector} from "./inspector";
-import type {RuntimeContext} from "@release-oppa/plugin";
+import type {Config, ContextEnrichment} from "@release-oppa/schema";
+import {createContext} from "../../createContext";
 
-export const inspect = new Command().name("inspect").action(async () => {
-  const context: RuntimeContext = {
-    cwd: process.cwd(),
-    command: "inspect",
-    protocol: "0.x",
-  };
-  await inspector({plugins: [git.plugin]}, context);
-});
+export const inspect = <Enrichment extends ContextEnrichment>({
+  config,
+}: {
+  config: Config<Enrichment>;
+}) =>
+  new Command().name("inspect").action(async () => {
+    const context = createContext({command: "inspect"});
+    await inspector(config, context);
+  });

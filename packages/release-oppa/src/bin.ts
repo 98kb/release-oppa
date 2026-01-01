@@ -1,3 +1,7 @@
-import {program} from "./program";
+import {configPromise} from "./configPromise";
+import {createProgram} from "./createProgram";
 
-program.parse(process.argv);
+(async () => {
+  const program = createProgram({config: await configPromise});
+  program.parse(process.argv);
+})();

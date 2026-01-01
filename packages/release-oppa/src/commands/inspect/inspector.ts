@@ -1,19 +1,19 @@
 import type {
+  Config,
   ContextEnrichment,
   Inspection,
   RuntimeContext,
-} from "@release-oppa/plugin";
-import type {InspectorOptions} from "./InspectorOptions";
+} from "@release-oppa/schema";
 import {printYaml} from "../../lib/printYaml";
 import {detector} from "../detect/detector";
 
 export const inspector = async <Enrichment extends ContextEnrichment>(
-  options: InspectorOptions<Enrichment>,
+  config: Config<Enrichment>,
   context: RuntimeContext & {extra?: Enrichment},
   // eslint-disable-next-line complexity
 ) => {
   const inspectionDetails: Record<string, unknown> = {};
-  for await (const plugin of options.plugins) {
+  for await (const plugin of config.plugins) {
     const detection = await detector(plugin, context);
     if (detection.compatible && plugin.inspect) {
       const inspection = await plugin.inspect(context);
