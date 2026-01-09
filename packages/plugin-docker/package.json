@@ -1,7 +1,7 @@
 {
-  "name": "release-oppa",
-  "version": "0.2.0",
-  "description": "automated semantic versioning and publishing",
+  "name": "@release-oppa/plugin-docker",
+  "version": "0.1.0",
+  "description": "Description for plugin-docker",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -11,27 +11,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./plugins": {
-      "types": "./dist/plugins.d.ts",
-      "import": "./dist/plugins.js",
-      "require": "./dist/plugins.cjs"
     }
-  },
-  "bin": {
-    "oppa": "./dist/bin.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "prepare": "pnpm build",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
   "keywords": [
-    "release-oppa"
+    "plugin-docker"
   ],
   "author": "",
   "license": "MIT",
@@ -39,13 +30,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@release-oppa/config-loader": "workspace:*",
     "@release-oppa/plugin": "workspace:*",
-    "@release-oppa/plugin-docker": "workspace:*",
-    "@release-oppa/plugin-git": "workspace:*",
     "@release-oppa/schema": "workspace:*",
-    "cli-highlight": "^2.1.11",
-    "commander": "^14.0.2",
-    "yaml": "^2.8.2"
+    "@snyk/docker-registry-v2-client": "^2.24.0",
+    "zod": "^4.3.2"
   }
 }
