@@ -11,7 +11,7 @@ export function createInspect(
     try {
       const allTags = await getTags(
         opts.registry,
-        opts.imageName,
+        opts.repository,
         undefined,
         undefined,
         1,
@@ -27,7 +27,7 @@ export function createInspect(
           },
           Remote: {
             Registry: opts.registry,
-            Repository: opts.imageName,
+            Repository: opts.repository,
             Latest: allTags,
           },
         },
